@@ -1,0 +1,59 @@
+### Add Toyota Camry
+POST http://localhost:3000/add
+Content-Type: application/json
+
+{
+  "name": "Toyota Camry",
+  "manufacturer": "Toyota",
+  "year": 2020,
+  "price": 30000,
+  "description": "Sedan sang trọng và đáng tin cậy."
+}
+
+### Add Honda Civic
+POST http://localhost:3000/add
+Content-Type: application/json
+
+{
+  "name": "Honda Civic",
+  "manufacturer": "Honda",
+  "year": 2022,
+  "price": 25000,
+  "description": "Xe compact tiết kiệm nhiên liệu."
+}
+
+### Add Ford Ranger
+POST http://localhost:3000/add
+Content-Type: application/json
+
+{
+  "name": "Ford Ranger",
+  "manufacturer": "Ford",
+  "year": 2021,
+  "price": 35000,
+  "description": "Xe bán tải mạnh mẽ và linh hoạt."
+}
+
+### Add Tesla Model 3
+POST http://localhost:3000/add
+Content-Type: application/json
+
+{
+  "name": "Tesla Model 3",
+  "manufacturer": "Tesla",
+  "year": 2023,
+  "price": 45000,
+  "description": "Xe điện hiện đại với công nghệ tiên tiến."
+}
+
+### Add BMW X5
+POST http://localhost:3000/add
+Content-Type: application/json
+
+{
+  "name": "BMW X5",
+  "manufacturer": "BMW",
+  "year": 2021,
+  "price": 60000,
+  "description": "SUV cao cấp với nội thất sang trọng."
+}

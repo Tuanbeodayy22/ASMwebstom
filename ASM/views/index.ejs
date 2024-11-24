@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách xe</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    /* Tổng thể */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Tiêu đề */
+    h1, h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* Bảng danh sách xe */
+    .car-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .car-table th, .car-table td {
+      padding: 12px 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .car-table th {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+
+    .car-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .car-table tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Nút hành động */
+    button {
+      cursor: pointer;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-edit {
+      background-color: #FFA500;
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background-color: #e69500;
+    }
+
+    .btn-delete {
+      background-color: #FF0000;
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background-color: #cc0000;
+    }
+
+    .btn-add {
+      background-color: #4CAF50;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-add:hover {
+      background-color: #45a049;
+    }
+
+    /* Form thêm xe */
+    .add-car-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .add-car-form input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .add-car-form button {
+      grid-column: span 2;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Danh sách xe</h1>
+  <table class="car-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tên xe</th>
+      <th>Hãng sản xuất</th>
+      <th>Năm sản xuất</th>
+      <th>Giá</th>
+      <th>Mô tả</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% cars.forEach(car => { %>
+      <tr>
+        <td><%= car.id %></td>
+        <td><%= car.name %></td>
+        <td><%= car.manufacturer %></td>
+        <td><%= car.year %></td>
+        <td><%= car.price %></td>
+        <td><%= car.description %></td>
+        <td>
+          <button class="btn-edit" onclick="editCar(<%= car.id %>)">Sửa</button>
+          <button class="btn-delete" onclick="deleteCar(<%= car.id %>)">Xóa</button>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+
+  <h2>Thêm xe mới</h2>
+  <form id="addCarForm" class="add-car-form">
+    <input type="text" id="name" placeholder="Tên xe" required />
+    <input type="text" id="manufacturer" placeholder="Hãng sản xuất" required />
+    <input type="number" id="year" placeholder="Năm sản xuất" required />
+    <input type="number" id="price" placeholder="Giá" required />
+    <input type="text" id="description" placeholder="Mô tả" required />
+    <button type="submit" class="btn-add">Thêm xe</button>
+  </form>
+</div>
+
+<script>
+  // Hàm xóa xe
+  function deleteCar(id) {
+    if (confirm("Bạn có chắc chắn muốn xóa xe này?")) {
+      axios.delete(`/delete/${id}`)
+              .then(response => {
+                alert(response.data.message);
+                location.reload(); // Reload lại trang
+              })
+              .catch(error => {
+                console.error("Error deleting car:", error);
+                alert("Không thể xóa xe.");
+              });
+    }
+  }
+
+  // Hàm sửa xe
+  function editCar(id) {
+    const name = prompt("Nhập tên mới:");
+    const manufacturer = prompt("Nhập hãng sản xuất mới:");
+    const year = prompt("Nhập năm sản xuất mới:");
+    const price = prompt("Nhập giá mới:");
+    const description = prompt("Nhập mô tả mới:");
+
+    axios.put(`/update/${id}`, {
+      name,
+      manufacturer,
+      year: parseInt(year),
+      price: parseFloat(price),
+      description
+    })
+            .then(response => {
+              alert(response.data.message);
+              location.reload(); // Reload lại trang
+            })
+            .catch(error => {
+              console.error("Error updating car:", error);
+              alert("Không thể sửa xe.");
+            });
+  }
+
+  // Xử lý thêm xe
+  document.getElementById('addCarForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const manufacturer = document.getElementById('manufacturer').value;
+    const year = parseInt(document.getElementById('year').value);
+    const price = parseFloat(document.getElementById('price').value);
+    const description = document.getElementById('description').value;
+
+    axios.post('/add', {
+      name,
+      manufacturer,
+      year,
+      price,
+      description
+    })
+            .then(response => {
+              alert(response.data.message);
+              location.reload(); // Reload lại trang
+            })
+            .catch(error => {
+              console.error("Error adding car:", error);
+              alert("Không thể thêm xe.");
+            });
+  });
+</script>
+</body>
+</html>
